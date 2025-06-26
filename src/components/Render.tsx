@@ -2,24 +2,20 @@ import React, { useEffect } from "react";
 import ChainModel from "../ChainModel/ChainModel";
 import { Stitch } from "../types/Stitch";
 import { useNavigate } from "react-router-dom";
-import { OrientationParameters } from "../types/OrientationParameters";
 
 interface RenderProps {
   stitches: Stitch[];
   setStitches: React.Dispatch<React.SetStateAction<Stitch[]>>;
-  orientationParameters: OrientationParameters;
 }
 
 const Render: React.FC<RenderProps> = ({
   stitches,
   setStitches,
-  orientationParameters,
 }) => {
   const [anyStichRendered, setAnyStitchRendered] = React.useState(false);
   const [simulationActive, setSimulationActive] = React.useState(false);
   const [simulationCompleted, setSimulationCompleted] = React.useState(false);
   const [patternGenerating, setPatternGenerating] = React.useState(false);
-  const [dyingCompleted, setDyingCompleted] = React.useState(false);
   const simulationRunCount = React.useRef(0);
 
   React.useEffect(() => {
@@ -29,9 +25,6 @@ const Render: React.FC<RenderProps> = ({
 
     if (simulationRunCount.current === 1 && !simulationActive) {
       setSimulationCompleted(true);
-      setTimeout(() => {
-        setDyingCompleted(true);
-      }, 0);
     }
   }, [simulationActive]);
 
@@ -61,13 +54,12 @@ const Render: React.FC<RenderProps> = ({
   return (
     <div style={{ textAlign: "left", padding: "20px" }}>
       <h1 style={{ fontSize: "2.5rem", marginBottom: "20px" }}>
-        Dying Your Hat
+        Dying Your Square
       </h1>
       <div style={{ height: "350px" }}>
         <ChainModel
           stitches={stitches}
           setStitches={setStitches}
-          orientationParameters={orientationParameters}
           simulationActive={simulationActive}
           setSimulationActive={setSimulationActive}
           onAnyStitchRendered={() => {
@@ -80,11 +72,9 @@ const Render: React.FC<RenderProps> = ({
           ? "Summoning stitches..."
           : !simulationCompleted
           ? "Letting stitches settle..."
-          : !dyingCompleted
-          ? "We're almost there..."
           : "Pinch and zoom to see the pattern in more detail"}
       </i>
-      {dyingCompleted && (
+      {simulationCompleted && (
         <div style={{ marginTop: "10px" }}>
           <button
             style={{

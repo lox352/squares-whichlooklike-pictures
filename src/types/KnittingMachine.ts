@@ -42,7 +42,7 @@ class KnittingMachine {
   }
 
   knitRow(pattern: StitchType[]): KnittingMachine {
-    const numberOfStitchesInRow = this.numberOfStitchesInRow();
+    const numberOfStitchesInRow = this.stitchesPerRow;
     const patternLength = pattern
       .map((stitchType) => {
         switch (stitchType) {
@@ -79,34 +79,29 @@ class KnittingMachine {
       case "k3tog":
         this.knit3Tog();
         break;
-      case "join":
-        this.join();
-        break;
     }
 
     return this;
   }
 
   knit1(): KnittingMachine {
-    const stitchesInCurrentRow = this.numberOfStitchesInRow();
-    const lastStitch = this.stitches[this.stitches.length - 1];
+    const currentStitchNumber = this.stitches.length;
+    const remainder = (currentStitchNumber) % this.stitchesPerRow + 1;
+    const linkedStitch = this.stitches[currentStitchNumber - 2 * (remainder) + 1];
 
-    const stitchFromLastRow = this.stitches[lastStitch.links[0]];
-    const links = [stitchFromLastRow.id + 1, lastStitch.id];
-
-    const linkedStitch = this.stitches[links[0]];
-    const radiusScaleFactor =
-      (adjacentStitchDistance * stitchesInCurrentRow) /
-      (2 * Math.PI) /
-      (linkedStitch.position.x ** 2 + linkedStitch.position.z ** 2) ** 0.5;
     const newPosition = {
       y: linkedStitch.position.y + verticalStitchDistance,
-      x: linkedStitch.position.x * radiusScaleFactor,
-      z: linkedStitch.position.z * radiusScaleFactor,
+      x: linkedStitch.position.x,
+      z: linkedStitch.position.z,
     };
 
+    const links =
+      linkedStitch.id === currentStitchNumber - 1
+      ? [linkedStitch.id]
+      : [linkedStitch.id, currentStitchNumber - 1];
+
     const newStitch: Stitch = {
-      id: lastStitch.id + 1,
+      id: currentStitchNumber,
       position: newPosition,
       links: links,
       starInfo: {
@@ -196,24 +191,6 @@ class KnittingMachine {
       colour: defaultColour,
     };
 
-    this.stitches.push(newStitch);
-
-    return this;
-  }
-
-  join(): KnittingMachine {
-    const lastStitch = this.stitches[this.stitches.length - 1];
-    const newStitch: Stitch = {
-      id: lastStitch.id + 1,
-      position: lastStitch.position,
-      links: [0, lastStitch.id],
-      starInfo: {
-        connectedStars: new Map<string, number[]>(),
-      } as StarInformation,
-      type: "join",
-      fixed: true,
-      colour: defaultColour,
-    };
     this.stitches.push(newStitch);
 
     return this;

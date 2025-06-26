@@ -48,7 +48,7 @@ const Pattern: React.FC<PatternProps> = ({ stitches }) => {
 
   return (
     <div style={{ textAlign: "left", padding: "20px" }}>
-      <h1 style={{ fontSize: "2.5rem", marginBottom: "20px" }}>Hat Pattern</h1>
+      <h1 style={{ fontSize: "2.5rem", marginBottom: "20px" }}>Knitting Pattern</h1>
       <KnittingPattern stitches={stitches} progress={0} />
       <div style={{ textAlign: "right" }}>
         <button

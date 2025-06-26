@@ -27,7 +27,7 @@ const SavedRender: React.FC = () => {
 
   return (
     <div style={{ textAlign: "left", padding: "20px" }}>
-      <h1 style={{ fontSize: "2.5rem", marginBottom: "20px" }}>Pre-dyed Hat</h1>
+      <h1 style={{ fontSize: "2.5rem", marginBottom: "20px" }}>Pre-dyed Rectangle</h1>
       <div style={{ height: "350px" }}>
         <ChainModel
           stitches={pattern.stitches.map(destringify)}

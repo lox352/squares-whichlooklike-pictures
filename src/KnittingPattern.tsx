@@ -149,29 +149,12 @@ const StitchBox: React.FC<{
   </div>
 );
 
-function constructConnections(stitches: Stitch[]): [number, number][] {
-  const deduplicated = new Set(
-    stitches.flatMap((stitch) =>
-      stitch?.starInfo?.connectedStars
-        ? Array.from(stitch.starInfo.connectedStars).flatMap((d) =>
-            d[1].map((e) => JSON.stringify([stitch.id, e].sort()))
-          )
-        : []
-    )
-  );
-  return Array.from(deduplicated).map(
-    (item) => JSON.parse(item) as [number, number]
-  );
-}
-
 const KnittingPattern: React.FC<KnittingPatternProps> = ({
   stitches,
   progress,
 }) => {
   const stitchPositions: { [id: number]: StitchPosition } = {};
-  const filteredStitches = stitches.filter((stitch) => stitch.id !== 0);
-  const connections = constructConnections(filteredStitches);
-  filteredStitches.forEach((stitch, index) => {
+  stitches.forEach((stitch, index) => {
     if (index === 0) {
       stitchPositions[stitch.id] = { row: 0, col: 0 };
       return;
@@ -194,15 +177,11 @@ const KnittingPattern: React.FC<KnittingPatternProps> = ({
         row: middleLinkPos.row - 1,
         col: middleLinkPos.col,
       };
+      stitchPositions[stitch.id - 1] = {
+        row: middleLinkPos.row - 1,
+        col: middleLinkPos.col + (middleLinkPos.row % 2 === 0 ? -1 : 1),
+      }
     }
-  });
-
-  filteredStitches.forEach((stitch) => {
-    stitch.starInfo.connectedStars.forEach((connectedStar, key) => {
-      console.log(
-        `Stitch ${stitch.id} connected to ${connectedStar} at ${key}`
-      );
-    });
   });
 
   const { minRow, minCol } = Object.values(stitchPositions).reduce(
@@ -233,7 +212,7 @@ const KnittingPattern: React.FC<KnittingPatternProps> = ({
           position: "relative",
         }}
       >
-        {filteredStitches.map((stitch) => {
+        {stitches.map((stitch) => {
           const position = stitchPositions[stitch.id];
           return (
             <StitchBox
@@ -271,64 +250,6 @@ const KnittingPattern: React.FC<KnittingPatternProps> = ({
               </LabelRight>
             );
           }
-        })}
-        {connections.map(([id1, id2]) => {
-          console.log(id1, id2);
-          const isPhantom = id1 <= 0;
-          const pos1 = isPhantom ? stitchPositions[-id1] : stitchPositions[id1];
-          const pos2 = stitchPositions[id2];
-          if (!pos1 || !pos2) return null;
-
-          let x1 = (numCols + pos1.col - 1) * 10 + 5;
-          const y1 = isPhantom
-            ? (numRows - pos1.row) * 10 + 5
-            : (numRows + pos1.row - 1) * 10 + 5;
-
-          let x2 = (numCols + pos2.col - 1) * 10 + 5;
-          const y2 = (numRows + pos2.row - 1) * 10 + 5;
-
-          const totalWidth = (numCols + 1) * 10;
-          const halfWidth = totalWidth / 2;
-
-          if (Math.abs(x2 - x1) > halfWidth) {
-            if (x1 < x2) {
-              x1 += totalWidth;
-            } else {
-              x2 += totalWidth;
-            }
-          }
-
-          return (
-            <svg
-              key={`connection-${id1}-${id2}`}
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: `${(numCols) * 10}px`,
-                height: `${(numRows) * 10}px`,
-                pointerEvents: "none",
-              }}
-            >
-              <line
-                x1={x1}
-                y1={y1}
-                x2={x2}
-                y2={y2}
-                stroke="lightblue"
-                strokeWidth="1"
-              />
-
-              <line
-                x1={x1 - totalWidth}
-                y1={y1}
-                x2={x2 - totalWidth}
-                y2={y2}
-                stroke="lightblue"
-                strokeWidth="1"
-              />
-            </svg>
-          );
         })}
       </div>
     </div>

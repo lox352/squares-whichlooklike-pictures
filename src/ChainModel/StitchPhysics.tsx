@@ -3,12 +3,9 @@ import PointMass from "./PointMass";
 import Link from "./Link";
 import { RapierRigidBody } from "@react-three/rapier";
 import { Stitch } from "../types/Stitch";
-import { colourNodes } from "../helpers/node-colouring";
 import * as THREE from "three";
 import { adjacentStitchDistance, verticalStitchDistance } from "../constants";
 import { useFrame } from "@react-three/fiber";
-import { OrientationParameters } from "../types/OrientationParameters";
-import { Line } from "@react-three/drei";
 
 function createChevronTexture() {
   const size = 256; // Texture resolution
@@ -45,29 +42,14 @@ const chevronTexture = createChevronTexture();
 interface StitchPhysicsProps {
   stitchesRef: React.MutableRefObject<Stitch[]>;
   setStitches?: React.Dispatch<React.SetStateAction<Stitch[]>>;
-  orientationParameters: OrientationParameters;
   simulationActive: boolean;
   setSimulationActive?: React.Dispatch<React.SetStateAction<boolean>>;
   onAnyStitchRendered?: () => void;
 }
 
-function constructConnections(stitches: Stitch[]): [number, number][] {
-  const deduplicated = new Set(
-    stitches.flatMap((stitch) =>
-      stitch?.starInfo?.connectedStars
-        ? Array.from(stitch.starInfo.connectedStars).flatMap((d) =>
-            d[1].map((e) => JSON.stringify([stitch.id, e].sort()))
-          )
-        : []
-    )
-  );
-  return Array.from(deduplicated).map((item) => JSON.parse(item) as [number, number]);
-}
-
 const StitchPhysics: React.FC<StitchPhysicsProps> = ({
   stitchesRef,
   setStitches,
-  orientationParameters,
   simulationActive,
   setSimulationActive,
   onAnyStitchRendered,
@@ -77,10 +59,6 @@ const StitchPhysics: React.FC<StitchPhysicsProps> = ({
   const stitches = stitchesRef.current;
   const stitchRefs = useRef<React.RefObject<RapierRigidBody>[]>(
     stitches.map(() => React.createRef())
-  );
-
-  const [connections, setConnections] = useState<[number, number][]>(
-    constructConnections(stitches)
   );
 
   const colourRefs = useRef<React.MutableRefObject<Float32Array>[]>(
@@ -125,40 +103,6 @@ const StitchPhysics: React.FC<StitchPhysicsProps> = ({
     }
 
     setSimulationActive(false);
-    (async () => {
-      const positions = stitchRefs.current.map((stitchRef) =>
-        stitchRef.current!.translation()
-      );
-
-      const [colours, starInformation] = await colourNodes(
-        positions,
-        orientationParameters
-      );
-
-      colourRefs.current.forEach((colourRef, i) => {
-        colourRef.current.set(colours[i]!.map((c) => c / 255));
-      });
-
-      const connectionsSet = constructConnections(
-        starInformation.map((info, i) => ({
-          ...stitches[i],
-          starInfo: info,
-        }))
-      );
-
-      setConnections(connectionsSet);
-
-      setStitches((stitches) =>
-        stitches.map((stitch, i) => ({
-          ...stitch,
-          colour: colours[i]!,
-          position: positions[i]!,
-          starInfo: starInformation[i]!,
-        }))
-      );
-
-      console.log("Colouring finished");
-    })();
   });
 
   useEffect(() => {
@@ -232,30 +176,6 @@ const StitchPhysics: React.FC<StitchPhysicsProps> = ({
           );
         })
       )}
-      {connections &&
-        Array.from(connections).map(([source, target]) => {
-          if (source === target) return null;
-          const stitchRef = stitchRefs.current[source];
-          const linkedStitchRef = stitchRefs.current[target];
-          if (!stitchRef?.current || !linkedStitchRef?.current) return null;
-          const { x: x1, y: y1, z: z1 } = stitchRef.current!.translation();
-          const {
-            x: x2,
-            y: y2,
-            z: z2,
-          } = linkedStitchRef.current!.translation();
-          return (
-            <Line
-              key={`connection-${source}-${target}`}
-              points={[
-                [x1, y1, z1],
-                [x2, y2, z2],
-              ]}
-              color="lightblue"
-              lineWidth={1}
-            />
-          );
-        })}
     </React.Fragment>
   );
 };

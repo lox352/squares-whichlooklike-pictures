@@ -48,9 +48,10 @@ export default function PointMass({
 }) {
   const meshRef = React.createRef<THREE.Mesh>();
 
+  // Make the mesh face in the x direction
   useFrame(() => {
-    if (rigidBodyRef.current && meshRef.current) {
-      meshRef.current.lookAt(new THREE.Vector3(0, 0, 0)); // Target point (0, 0, 0) or you can change it
+    if (meshRef.current) {
+      meshRef.current.rotation.set(0, Math.PI / 2, 0);
     }
   });
 

@@ -76,7 +76,7 @@ const PreviousPatterns: React.FC<{ patterns: SavedPattern[] }> = ({
                 style={{ ...buttonStyle }}
                 onClick={() => navigate(`/render/${id}`)}
               >
-                Visualise Hat
+                Visualise Square
               </button>
               <button
                 style={{ ...buttonStyle }}
@@ -158,11 +158,11 @@ const Home: React.FC = () => {
   return (
     <div style={{ textAlign: "left", padding: "20px" }}>
       <h1 style={{ fontSize: "2.5rem", marginBottom: "20px" }}>
-        Hats Which Look Like Space
+        Squares Which Look Like Pictures
       </h1>
       <p style={{ fontSize: "1rem", marginBottom: "20px" }}>
-        Knit a hat which looks like the night sky. Begin by designing your hat, then
-        render it, and finally generate the pattern.
+        Knit a square which looks like a picture! This tool allows you to upload an image and generate a knitting pattern
+        based on the colors in the image. You can then visualise the pattern and save it for later use.
       </p>
       <button
         style={{
