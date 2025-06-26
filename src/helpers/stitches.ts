@@ -21,15 +21,15 @@ const getNumberOfRows = (
     const img = new Image();
     img.onload = () => {
       const aspectRatio = img.height / img.width;
-      const numberOfRows = Math.round(stitchesPerRow * aspectRatio);
+      const numberOfRows = Math.ceil(stitchesPerRow * aspectRatio);
       resolve(numberOfRows);
     };
     img.src = URL.createObjectURL(uploadedImage);
   });
 };
 
-const colourStitches = (stitches: Stitch[], stitchesPerRow: number, uploadedImage: File): void => {
-  const numRows = Math.floor(stitches.length / stitchesPerRow);
+const colourStitches = async (stitches: Stitch[], stitchesPerRow: number, uploadedImage: File): void => {
+  const numRows = await getNumberOfRows(uploadedImage, stitchesPerRow);
 
   const img = new Image();
   img.onload = () => {
@@ -284,7 +284,7 @@ const getStitches = async (
   knittingMachine.castOnRow(generateLine(stitchesPerRow));
   const numberOfRows = await getNumberOfRows(uploadedImage, stitchesPerRow);
 
-  for (let i = 1; i < numberOfRows - 1; i++) {
+  for (let i = 1; i < numberOfRows; i++) {
     knittingMachine.knitRow(["k1"]);
   }
 
