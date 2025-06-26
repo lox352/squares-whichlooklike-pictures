@@ -9,7 +9,7 @@ const generateLine =
     return {
       x: 0,
       z: (point - (numPoints - 1) / 2) * adjacentStitchDistance,
-      y: 0,
+      y: 1,
     };
   };
 
