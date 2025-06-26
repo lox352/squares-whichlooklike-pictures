@@ -28,7 +28,7 @@ const getNumberOfRows = (
   });
 };
 
-const colourStitches = async (stitches: Stitch[], stitchesPerRow: number, uploadedImage: File): void => {
+const colourStitches = async (stitches: Stitch[], stitchesPerRow: number, uploadedImage: File): Promise<void> => {
   const numRows = await getNumberOfRows(uploadedImage, stitchesPerRow);
 
   const img = new Image();
@@ -288,7 +288,7 @@ const getStitches = async (
     knittingMachine.knitRow(["k1"]);
   }
 
-  colourStitches(knittingMachine.stitches, stitchesPerRow, uploadedImage);
+  await colourStitches(knittingMachine.stitches, stitchesPerRow, uploadedImage);
 
   return knittingMachine.stitches;
 };
