@@ -160,7 +160,7 @@ const KnittingPattern: React.FC<KnittingPatternProps> = ({
       return;
     }
 
-    const linksToConsider = stitch.links.filter((id) => id !== 0).slice(0, -1);
+    const linksToConsider = stitch.links.slice(0, -1);
 
     if (linksToConsider.length === 0) {
       const linkedStitchPos =

@@ -87,7 +87,9 @@ const RecordingProgress: React.FC<RecordingProgressProps> = ({
           alignItems: "center",
         }}
       >
-        <div>{((progress / stitchesLength) * 100).toFixed(2)}% complete</div>
+        <div>
+          {(((progress + 1) / stitchesLength) * 100).toFixed(2)}% complete
+        </div>
         <button
           style={{
             ...buttonStyle,
@@ -134,7 +136,8 @@ const SavedPattern: React.FC = () => {
     const progress = savedPattern.progress;
     let newProgress = progress;
     if (delta === "addRow") {
-      const nextRowStitch = savedPattern.stitches.map(destringify)
+      const nextRowStitch = savedPattern.stitches
+        .map(destringify)
         .slice(progress)
         .find((stitch) => stitch.links.slice(0, -1).includes(progress))?.id;
       if (!nextRowStitch) {
@@ -149,7 +152,7 @@ const SavedPattern: React.FC = () => {
       newProgress += delta;
     }
 
-    newProgress = Math.max(newProgress ?? 0, 0);
+    newProgress = Math.max(newProgress ?? -1, -1);
     localStorage.setItem(
       savedPattern.id,
       JSON.stringify({ ...savedPattern, progress: newProgress })
@@ -208,9 +211,9 @@ const SavedPattern: React.FC = () => {
           >
             Start Knitting
           </button>
-          <div style={{ textAlign: "left"}}>
+          <div style={{ textAlign: "left" }}>
             {(
-              (savedPattern.progress / savedPattern.stitches.length) *
+              ((savedPattern.progress + 1) / savedPattern.stitches.length) *
               100
             ).toFixed(2)}
             % complete

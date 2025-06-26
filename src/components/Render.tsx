@@ -14,7 +14,7 @@ const Render: React.FC<RenderProps> = ({
 }) => {
   const [anyStichRendered, setAnyStitchRendered] = React.useState(false);
   const [simulationActive, setSimulationActive] = React.useState(false);
-  const [simulationCompleted, setSimulationCompleted] = React.useState(false);
+  const [simulationCompleted, setSimulationCompleted] = React.useState(true);
   const [patternGenerating, setPatternGenerating] = React.useState(false);
   const simulationRunCount = React.useRef(0);
 

@@ -22,7 +22,7 @@ const saveToLocalStorage = (
     name: patternName ?? undefined,
     savedAt: new Date(),
     stitches: stitches.map(stringify),
-    progress: 0,
+    progress: -1,
   };
   try {
     localStorage.setItem(storageKey, JSON.stringify(savedPattern));
@@ -49,7 +49,7 @@ const Pattern: React.FC<PatternProps> = ({ stitches }) => {
   return (
     <div style={{ textAlign: "left", padding: "20px" }}>
       <h1 style={{ fontSize: "2.5rem", marginBottom: "20px" }}>Knitting Pattern</h1>
-      <KnittingPattern stitches={stitches} progress={0} />
+      <KnittingPattern stitches={stitches} progress={-1} />
       <div style={{ textAlign: "right" }}>
         <button
           style={{

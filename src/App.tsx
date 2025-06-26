@@ -8,13 +8,9 @@ import { Stitch } from "./types/Stitch";
 import Pattern from "./components/Pattern";
 import SavedPattern from "./components/SavedPattern";
 import SavedRender from "./components/SavedRender";
-import { defaultOrientationParameters } from "./types/OrientationParameters";
 
 function App() {
   const [stitches, setStitches] = useState<Stitch[]>([]);
-  const [orientationParameters, setOrientationParameters] = useState(
-    defaultOrientationParameters
-  );
 
   return (
     <Router>
@@ -25,8 +21,6 @@ function App() {
           element={
             <Design
               setStitches={setStitches}
-              orientationParameters={orientationParameters}
-              setOrientationParameters={setOrientationParameters}
             />
           }
         />
@@ -36,7 +30,6 @@ function App() {
             <Render
               stitches={stitches}
               setStitches={setStitches}
-              orientationParameters={orientationParameters}
             />
           }
         />

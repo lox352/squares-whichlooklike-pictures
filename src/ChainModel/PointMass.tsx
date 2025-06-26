@@ -33,7 +33,6 @@ export default function PointMass({
   position,
   rigidBodyRef,
   fixed,
-  visible,
   colourRef,
   chevronTexture,
   geometry,
@@ -41,7 +40,6 @@ export default function PointMass({
   position: Point;
   rigidBodyRef: React.RefObject<RapierRigidBody>;
   fixed: boolean;
-  visible: boolean;
   colourRef: React.MutableRefObject<Float32Array>;
   chevronTexture: THREE.Texture;
   geometry: THREE.PlaneGeometry;
@@ -66,7 +64,7 @@ export default function PointMass({
       angularDamping={0.8}
     >
       <BallCollider args={[0.02]} />
-      {visible && colourRef.current && (
+      {colourRef.current && (
         <mesh scale={2} ref={meshRef} geometry={geometry}>
           <shaderMaterial
             uniforms={{

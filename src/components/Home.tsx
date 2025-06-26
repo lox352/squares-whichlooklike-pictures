@@ -26,7 +26,7 @@ const PreviousPatterns: React.FC<{ patterns: SavedPattern[] }> = ({
   if (patterns.length === 0) {
     return null;
   }
-  
+
   return (
     <div style={{ marginTop: "40px" }}>
       <h2 style={{ fontSize: "2rem", marginBottom: "20px" }}>
@@ -113,10 +113,11 @@ const PreviousPatterns: React.FC<{ patterns: SavedPattern[] }> = ({
                 Delete
               </button>
               <div style={{ marginTop: "5px", fontStyle: "italic" }}>
-                {((100 * pattern.progress) / pattern.stitches.length).toFixed(
-                  2
-                )}
-                % completed
+                {(
+                  (100 * (pattern.progress + 1)) /
+                  pattern.stitches.length
+                ).toFixed(2)}
+                % complete
               </div>
             </li>
           );
@@ -161,8 +162,9 @@ const Home: React.FC = () => {
         Squares Which Look Like Pictures
       </h1>
       <p style={{ fontSize: "1rem", marginBottom: "20px" }}>
-        Knit a square which looks like a picture! This tool allows you to upload an image and generate a knitting pattern
-        based on the colors in the image. You can then visualise the pattern and save it for later use.
+        Knit a square which looks like a picture! This tool allows you to upload
+        an image and generate a knitting pattern based on the colors in the
+        image. You can then visualise the pattern and save it for later use.
       </p>
       <button
         style={{

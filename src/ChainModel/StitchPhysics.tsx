@@ -81,7 +81,7 @@ const StitchPhysics: React.FC<StitchPhysicsProps> = ({
     }
     if (!setSimulationActive || !setStitches) return;
     if (frameNumber.current === 0) {
-      setSimulationActive(true);
+      setSimulationActive(false);
     }
     if (!simulationActive) return;
     frameNumber.current++;
@@ -150,7 +150,6 @@ const StitchPhysics: React.FC<StitchPhysicsProps> = ({
             rigidBodyRef={stitchRef}
             position={stitch.position}
             fixed={stitch.links.length <= 1}
-            visible={stitch.id > 0}
             colourRef={colourRefs.current[stitch.id]}
             chevronTexture={chevronTexture}
             geometry={geometry}
